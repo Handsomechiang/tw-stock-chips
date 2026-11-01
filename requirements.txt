@@ -1,5 +1,5 @@
+gspread
+oauth2client
 requests
 pandas
-gspread
-google-auth
 python-dateutil
