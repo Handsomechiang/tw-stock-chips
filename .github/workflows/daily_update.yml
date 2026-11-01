@@ -1,0 +1,27 @@
+name: Daily Taiwan Stock Chips
+
+on:
+  schedule:
+    # 每天 UTC 14:00 ≈ 台灣時間 22:00（週一到週五）
+    - cron: '0 14 * * 1-5'
+  workflow_dispatch:  # 允許手動執行
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run updater
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
+        run: python main.py
