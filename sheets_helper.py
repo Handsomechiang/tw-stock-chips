@@ -3,6 +3,7 @@ import gspread
 from google.oauth2.service_account import Credentials
 import json
 import os
+import math  # 用於檢查 NaN 或 Inf 浮點數
 
 def get_sheet():
     """取得 Google Sheet 工作表"""
@@ -44,7 +45,16 @@ def append_or_update(sheet, row_data: dict):
         "外資大小", "前五大交易人留倉", "前十大交易人留倉",
         "選PCR", "外(選)", "韭菜指數", "未平倉口數"
     ]
-    values = [row_data.get(h, "") for h in headers]
+    
+    # 過濾 row_data 中的 NaN 或 Inf 浮點數，避免觸發 JSON 編碼錯誤
+    cleaned_row_data = {}
+    for k, v in row_data.items():
+        if isinstance(v, float) and (math.isnan(v) or math.isinf(v)):
+            cleaned_row_data[k] = ""  # 將非法的浮點數轉為空字串
+        else:
+            cleaned_row_data[k] = v
+
+    values = [cleaned_row_data.get(h, "") for h in headers]
 
     # 取得現有日期
     all_dates = sheet.col_values(1)[1:]  # 跳過表頭
