@@ -1,5 +1,4 @@
-gspread
-oauth2client
+gspread>=6.0
 requests
 pandas
 python-dateutil
