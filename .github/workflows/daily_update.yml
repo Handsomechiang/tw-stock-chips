@@ -2,20 +2,21 @@ name: Daily Taiwan Stock Chips
 
 on:
   schedule:
-    # 每天 UTC 14:00 ≈ 台灣時間 22:00（週一到週五）
-    - cron: '0 14 * * 1-5'
+    # UTC 14:17 = 台灣時間 22:17（週一到週五）；GitHub 排程常延遲數小時屬正常
+    - cron: '17 14 * * 1-5'
   workflow_dispatch:  # 允許手動執行
 
 jobs:
   update:
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
