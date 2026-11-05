@@ -1,5 +1,6 @@
 # Google Sheets 寫入輔助
 import json
+import math
 import os
 
 import gspread
@@ -46,6 +47,8 @@ def ensure_headers(sheet):
 def append_or_update(sheet, row):
     """新增或更新一列資料。row 為 dict（鍵名同 HEADERS）或已排好順序的 list。"""
     row_data = [row.get(h, "") for h in HEADERS] if isinstance(row, dict) else list(row)
+    # 空值（NaN／無限大）Google 試算表不接受，一律轉成空白
+    row_data = ["" if isinstance(v, float) and not math.isfinite(v) else v for v in row_data]
     date_val = row_data[0]
     dates = sheet.col_values(1)  # 只讀日期欄，比讀整張表快
 
